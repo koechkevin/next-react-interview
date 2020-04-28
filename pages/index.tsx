@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList } from '../src/components';
+import {CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList } from '../src/components';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
@@ -11,17 +11,8 @@ import { Coin } from '../src/components/CoinsList/CoinsList.interface';
 import Skeleton from '@material-ui/lab/Skeleton';
 import _ from 'lodash.throttle';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {FAVOURITES} from "../src/useFavourites";
 
-const tabs: Item[] = [
-  {
-    label: 'EXCHANGES',
-    component: <div>FFF</div>,
-  },
-  {
-    label: 'FAVOURITES',
-    component: <div>FFF</div>,
-  },
-];
 const Home: FC<HomeProps> = (props) => {
   const classes = usePageStyles();
   const list = props.coinsWithGlobalAverage || [];
@@ -29,6 +20,7 @@ const Home: FC<HomeProps> = (props) => {
   const [listToDisplay, setListToDisplay] = useState<Coin[]>(() => list.slice(0, 10));
   const [timeout, setTime] = useState<any>();
 
+  const [activeTab, setActiveTab] = useState(0);
   const next = () => {
     const time = setTimeout(() => {
       setListToDisplay((lst: Coin[]) => [...lst, ...list.slice(lst.length, lst.length + 10)]);
@@ -43,19 +35,46 @@ const Home: FC<HomeProps> = (props) => {
   });
 
   const { theme, switchTheme, isDark } = useLocalTheme();
+  const [favourites, setFavourites] = useState<Coin[]>(() => []);
+
+  useEffect(() => {
+    if(activeTab === 2){
+      const interval = setInterval(() => {
+        const favourites = JSON.parse(localStorage.getItem(FAVOURITES) || '{}');
+        const favourited:Coin[]  =  [];
+        Object.keys(favourites).reverse().forEach((fav: string) => {
+          if(favourites[fav]) {
+            const coin = list.find((each: Coin) => each.id === fav);
+            if(coin){
+              favourited.push(coin);
+            }
+          }
+        });
+        setFavourites(favourited);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, []);
 
   const tabConfig: Item[] = [
     {
       label: 'CRYPTOCURRENCIES',
       component: <CoinsList list={listToDisplay} />,
     },
-    ...tabs,
+    {
+      label: 'EXCHANGES',
+      component: <div>FFF</div>,
+    },
+    {
+      // DO NOT CHANGE THE INDICES
+      label: 'FAVOURITES',
+      component: <CoinsList list={favourites} />,
+    },
   ];
-  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <ThemeProvider theme={theme || light}>
-      <Paper>
+      <Paper elevation={0} style={{ padding: 0, borderRadius: 0}}>
         <InfiniteScroll
           dataLength={list.length}
           next={() => {}}

@@ -26,8 +26,6 @@ export default makeStyles((theme: Theme) =>
       justifyContent: 'center',
       fontWeight: 'bold',
       padding: 4,
-      // minWidth: 20,
-      // minHeight: 20,
       marginLeft: 8,
       borderRadius: 4,
       backgroundColor: theme.palette.primary.main,
