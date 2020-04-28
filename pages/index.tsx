@@ -54,8 +54,9 @@ const Home: FC<HomeProps> = (props) => {
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, []);
+  }, [activeTab]);
 
+  // DO NOT CHANGE THE INDICES
   const tabConfig: Item[] = [
     {
       label: 'CRYPTOCURRENCIES',
@@ -66,7 +67,6 @@ const Home: FC<HomeProps> = (props) => {
       component: <div>FFF</div>,
     },
     {
-      // DO NOT CHANGE THE INDICES
       label: 'FAVOURITES',
       component: <CoinsList list={favourites} />,
     },
