@@ -5,3 +5,4 @@ export { default as CryptoPricesAndPortfolio } from './CryptoPricesAndPortfolio/
 export { default as usePageStyles } from './pageStyles';
 export { CoinInfo } from './CoinInfo/';
 export { CoinChart } from './CoinChart';
+export { Exchanges } from './Exchanges';

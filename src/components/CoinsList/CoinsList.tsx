@@ -13,7 +13,7 @@ const CoinsList: FC<Props> = (props) => {
       <div className={classes.table}>
         <CoinsListHeader />
         {list.map((coin: Coin, index: number) => (
-          <SingleCoinElement key={index} {...coin} />
+          <SingleCoinElement key={coin.id} {...coin} />
         ))}
       </div>
     </div>

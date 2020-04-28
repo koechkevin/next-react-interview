@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import {CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList } from '../src/components';
+import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Exchanges } from '../src/components';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
@@ -11,7 +11,7 @@ import { Coin } from '../src/components/CoinsList/CoinsList.interface';
 import Skeleton from '@material-ui/lab/Skeleton';
 import _ from 'lodash.throttle';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {FAVOURITES} from "../src/useFavourites";
+import { FAVOURITES } from '../src/useFavourites';
 
 const Home: FC<HomeProps> = (props) => {
   const classes = usePageStyles();
@@ -38,18 +38,20 @@ const Home: FC<HomeProps> = (props) => {
   const [favourites, setFavourites] = useState<Coin[]>(() => []);
 
   useEffect(() => {
-    if(activeTab === 2){
+    if (activeTab === 2) {
       const interval = setInterval(() => {
         const favourites = JSON.parse(localStorage.getItem(FAVOURITES) || '{}');
-        const favourited:Coin[]  =  [];
-        Object.keys(favourites).reverse().forEach((fav: string) => {
-          if(favourites[fav]) {
-            const coin = list.find((each: Coin) => each.id === fav);
-            if(coin){
-              favourited.push(coin);
+        const favourited: Coin[] = [];
+        Object.keys(favourites)
+          .reverse()
+          .forEach((fav: string) => {
+            if (favourites[fav]) {
+              const coin = list.find((each: Coin) => each.id === fav);
+              if (coin) {
+                favourited.push(coin);
+              }
             }
-          }
-        });
+          });
         setFavourites(favourited);
       }, 1000);
       return () => clearInterval(interval);
@@ -64,7 +66,7 @@ const Home: FC<HomeProps> = (props) => {
     },
     {
       label: 'EXCHANGES',
-      component: <div>FFF</div>,
+      component: <Exchanges />,
     },
     {
       label: 'FAVOURITES',
@@ -74,7 +76,7 @@ const Home: FC<HomeProps> = (props) => {
 
   return (
     <ThemeProvider theme={theme || light}>
-      <Paper elevation={0} style={{ padding: 0, borderRadius: 0}}>
+      <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
         <InfiniteScroll
           dataLength={list.length}
           next={() => {}}
@@ -86,7 +88,11 @@ const Home: FC<HomeProps> = (props) => {
               .fill('')
               .map((e, i) => (
                 <Paper className={classes.skeleton} style={{ padding: '0 32px' }} key={i}>
-                  <Skeleton style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }} animation="wave" height={51} />
+                  <Skeleton
+                    style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
+                    animation="wave"
+                    height={51}
+                  />
                 </Paper>
               ))
           }
