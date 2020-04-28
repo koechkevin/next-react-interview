@@ -33,7 +33,7 @@ const Header: FC<Props> = (props) => {
           <IconButton>
             <MoreHorizIcon className={classes.icon} />
           </IconButton>
-          <Divider style={{ height: 20, width: 2 }} variant="fullWidth" orientation="vertical" />
+          <div className={classes.divider} />
           <div>
             <input placeholder="Search" className={classes.input} />
           </div>

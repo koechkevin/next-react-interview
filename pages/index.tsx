@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Exchanges } from '../src/components';
+import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
@@ -76,6 +77,10 @@ const Home: FC<HomeProps> = (props) => {
 
   return (
     <ThemeProvider theme={theme || light}>
+      <Head>
+        <title>Crypto Stats</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
         <InfiniteScroll
           dataLength={list.length}

@@ -5,7 +5,12 @@ export default makeStyles((theme: Theme) =>
     root: {
       backgroundColor: theme.palette.primary.contrastText,
       minWidth: 800,
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+    },
+    divider: {
+      height: 20,
+      width: 1,
+      backgroundColor: theme.palette.grey['300'],
     },
     logo: {
       marginRight: theme.spacing(4),
@@ -14,7 +19,7 @@ export default makeStyles((theme: Theme) =>
       flex: 1,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-evenly'
+      justifyContent: 'space-evenly',
     },
     text: {
       color: theme.palette.text.primary,
@@ -25,8 +30,8 @@ export default makeStyles((theme: Theme) =>
     getStarted: {
       borderRadius: 17,
     },
-    icon:{
-      color: theme.palette.grey['500']
+    icon: {
+      color: theme.palette.grey['500'],
     },
     input: {
       width: '100%',
@@ -37,7 +42,7 @@ export default makeStyles((theme: Theme) =>
       padding: '8px 16px',
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.primary,
-      border: `1px solid ${theme.palette.grey['300']}`
-    }
+      border: `1px solid ${theme.palette.grey['300']}`,
+    },
   }),
 );

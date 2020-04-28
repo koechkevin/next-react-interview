@@ -8,6 +8,7 @@ import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
 import { baseUrl } from '../src/apiConfig';
 import Router from 'next/router';
+import Head from 'next/head';
 
 const Coin: FC<CoinProps> = (props) => {
   const { coin } = props;
@@ -59,6 +60,10 @@ const Coin: FC<CoinProps> = (props) => {
   }
   return (
     <ThemeProvider theme={theme || light}>
+      <Head>
+        <title>{coin && coin.name}</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Paper style={{ borderRadius: 0, minHeight: '100vh' }} elevation={0}>
         <Header isDark={isDark} onChangeTheme={switchTheme} />
         <Paper elevation={0} style={{ padding: 32 }}>
