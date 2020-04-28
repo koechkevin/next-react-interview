@@ -77,42 +77,46 @@ const Home: FC<HomeProps> = (props) => {
   return (
     <ThemeProvider theme={theme || light}>
       <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
-      <InfiniteScroll
-        dataLength={list.length}
-        next={() => {}}
-        hasMore={listToDisplay < list}
-        height="100vh"
-        loader={
-          activeTab === 0 &&
-          Array(9)
-            .fill('')
-            .map((e, i) => (
-              <Paper className={classes.skeleton} style={{ padding: '0 32px', borderRadius: 0 }} key={i}>
-                <Skeleton style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }} animation="wave" height={51} />
-              </Paper>
-            ))
-        }
-        onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
-        endMessage={
-          <Paper style={{ borderRadius: 0, textAlign: 'center' }} elevation={0}>
-            <b>All Done</b>
+        <InfiniteScroll
+          dataLength={list.length}
+          next={() => {}}
+          hasMore={listToDisplay < list}
+          height="100vh"
+          loader={
+            activeTab === 0 &&
+            Array(9)
+              .fill('')
+              .map((e, i) => (
+                <Paper className={classes.skeleton} style={{ padding: '0 32px', borderRadius: 0 }} key={i}>
+                  <Skeleton
+                    style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
+                    animation="wave"
+                    height={51}
+                  />
+                </Paper>
+              ))
+          }
+          onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
+          endMessage={
+            <Paper style={{ borderRadius: 0, textAlign: 'center' }} elevation={0}>
+              <b>All Done</b>
+            </Paper>
+          }
+        >
+          <Header isDark={isDark} onChangeTheme={switchTheme} />
+          <Paper elevation={0} className={classes.body}>
+            {list.length && <CryptoPricesAndPortfolio {...list[0]} />}
+            <div>
+              <Tabs
+                onTabChange={(idx: number) => {
+                  setActiveTab(idx);
+                  setListToDisplay(() => list.slice(0, 10));
+                }}
+                tabs={tabConfig}
+              />
+            </div>
           </Paper>
-        }
-      >
-        <Header isDark={isDark} onChangeTheme={switchTheme} />
-        <Paper elevation={0} className={classes.body}>
-          {list.length && <CryptoPricesAndPortfolio {...list[0]} />}
-          <div>
-            <Tabs
-              onTabChange={(idx: number) => {
-                setActiveTab(idx);
-                setListToDisplay(() => list.slice(0, 10));
-              }}
-              tabs={tabConfig}
-            />
-          </div>
-        </Paper>
-      </InfiniteScroll>
+        </InfiniteScroll>
       </Paper>
     </ThemeProvider>
   );
