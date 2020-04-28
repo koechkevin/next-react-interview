@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p $PORT"
   },
   "author": "Kevin Koech Sharp <koechkevin92@gmail.com>",
   "dependencies": {
