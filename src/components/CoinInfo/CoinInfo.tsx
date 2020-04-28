@@ -8,7 +8,8 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import LanguageIcon from '@material-ui/icons/Language';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import ExploreIcon from '@material-ui/icons/Explore';
-import {useFavourites} from "../../useFavourites";
+import { useFavourites } from '../../useFavourites';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const CoinInfo: FC<Props> = (props) => {
   const {
@@ -24,7 +25,8 @@ const CoinInfo: FC<Props> = (props) => {
     totalSupply,
     websiteUrl,
     twitterUrl,
-    exp, id,
+    exp,
+    id,
   } = props;
   const classes = useStyles();
 
@@ -40,7 +42,11 @@ const CoinInfo: FC<Props> = (props) => {
         </div>
 
         <div className={[classes.flex, classes.label].join(' ')}>
-          <div onClick={onFavourite} style={{ height: 32, width: 32, justifyContent: 'center' }} className={classes.flex}>
+          <div
+            onClick={onFavourite}
+            style={{ height: 32, width: 32, justifyContent: 'center' }}
+            className={classes.flex}
+          >
             <StarIcon className={classes.icon} style={{ color: !favourite ? 'lightgray' : '' }} />
           </div>
           <div className={classes.price}>{`$${price.toFixed(2)}`}</div>
@@ -78,33 +84,39 @@ const CoinInfo: FC<Props> = (props) => {
         </div>
       </Box>
       <Box style={{ height: 96 }}>
-        <div
-          onClick={() => window.open(websiteUrl, '_blank')}
-          style={{ height: 32, width: 32, justifyContent: 'center' }}
-          className={classes.flex}
-        >
-          <LanguageIcon style={{ color: 'lightgray' }} />
-          <span style={{ marginLeft: 8 }}>Website</span>
-        </div>
-        <div
-          onClick={() => window.open(twitterUrl, '_blank')}
-          style={{ height: 32, width: 32, justifyContent: 'center' }}
-          className={classes.flex}
-        >
-          <TwitterIcon style={{ color: 'lightgray' }} />
-          <span style={{ marginLeft: 8 }}>Twitter</span>
-        </div>
+        <Tooltip title={websiteUrl}>
+          <div
+            onClick={() => window.open(websiteUrl, '_blank')}
+            style={{ height: 32, width: 32, justifyContent: 'center', cursor: 'pointer' }}
+            aria-label="link"
+            className={classes.flex}
+          >
+            <LanguageIcon style={{ color: 'lightgray' }} />
+            <span style={{ marginLeft: 8 }}>Website</span>
+          </div>
+        </Tooltip>
+        <Tooltip title={twitterUrl}>
+          <div
+            onClick={() => window.open(twitterUrl, '_blank')}
+            style={{ height: 32, width: 32, justifyContent: 'center', cursor: 'pointer' }}
+            className={classes.flex}
+          >
+            <TwitterIcon style={{ color: 'lightgray' }} />
+            <span style={{ marginLeft: 8 }}>Twitter</span>
+          </div>
+        </Tooltip>
       </Box>
       <Box style={{ height: 96 }}>
         {exp.map((ex: string, index: number) => (
-          <div
-            onClick={() => window.open(ex, '_blank')}
-            style={{ display: 'flex', alignItems: 'center', height: 32 }}
-            key={index}
-          >
-            <ExploreIcon style={{ color: 'lightgray', marginRight: 8 }} />
-            <span>{`Explorer${index + 1}`}</span>
-          </div>
+          <Tooltip key={index} title={ex}>
+            <div
+              onClick={() => window.open(ex, '_blank')}
+              style={{ display: 'flex', alignItems: 'center', height: 32, cursor: 'pointer' }}
+            >
+              <ExploreIcon style={{ color: 'lightgray', marginRight: 8 }} />
+              <span>{`Explorer${index + 1}`}</span>
+            </div>
+          </Tooltip>
         ))}
       </Box>
     </Box>

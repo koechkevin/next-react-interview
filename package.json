@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start -p $PORT"
   },
-  "author": "Kevin Koech Sharp <koechkevin92@gmail.com>",
+  "author": "Kevin Koech <koechkevin92@gmail.com>",
   "dependencies": {
     "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
@@ -18,7 +18,7 @@
     "react": "^16.7.0",
     "react-charts": "^2.0.0-beta.6",
     "react-dom": "^16.7.0",
-    "react-infinite-scroll-component": "^5.0.4"
+    "react-infinite-scroll-component": "^5.0.4",
   },
   "license": "ISC",
   "devDependencies": {

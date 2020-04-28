@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Props } from './CoinChart.interface';
-import useStyles from './CoinChart.styles';
 import { Chart } from 'react-charts';
 
 const CoinChart: FC<Props> = (props) => {
@@ -9,11 +8,10 @@ const CoinChart: FC<Props> = (props) => {
   const d = React.useMemo(
     () => [
       {
-        label: 'bd',
         data,
       },
     ],
-    [],
+    [data],
   );
 
   const axes = React.useMemo(
