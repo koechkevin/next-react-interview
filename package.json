@@ -6,11 +6,26 @@
     "build": "next build",
     "start": "next start"
   },
-  "author": "Remy Sharp <remy@leftlogic.com>",
+  "author": "Kevin Koech Sharp <koechkevin92@gmail.com>",
   "dependencies": {
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.51",
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15",
+    "lodash.throttle": "^4.1.1",
     "next": "latest",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react-charts": "^2.0.0-beta.6",
+    "react-dom": "^16.7.0",
+    "react-infinite-scroll-component": "^5.0.4"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.14.150",
+    "@types/lodash.throttle": "^4.1.6",
+    "@types/node": "^13.13.4",
+    "@types/react": "^16.9.34",
+    "typescript": "^3.8.3"
+  }
 }
