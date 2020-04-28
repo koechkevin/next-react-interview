@@ -31,6 +31,7 @@ export default makeStyles((theme: Theme) =>
     input: {
       width: '100%',
       outline: 'none',
+      boxSizing: 'border-box',
       height: 32,
       borderRadius: 16,
       padding: '8px 16px',
