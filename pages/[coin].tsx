@@ -30,9 +30,9 @@ const Coin: FC<CoinProps> = (props) => {
     {
       label: 'OVERVIEW',
       component: (
-        <div style={{ minWidth: '800px', height: '500px' }}>
+        <Paper style={{ minWidth: 800 - 32, height: '500px', borderRadius: 0 }}>
           <CoinChart data={chart || []} />
-        </div>
+        </Paper>
       ),
     },
     {
@@ -82,9 +82,9 @@ const Coin: FC<CoinProps> = (props) => {
         <title>{coin && coin.name}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Paper style={{ borderRadius: 0, minHeight: '100vh' }} elevation={0}>
+      <Paper style={{ borderRadius: 0, minHeight: '100vh', minWidth: 800 }} elevation={0}>
         <Header onCurrencyChange={setCurrencyData} onChange={onChange} onChangeTheme={switchTheme} initialValue={headerValues} />
-        <Paper elevation={0} style={{ padding: 32 }}>
+        <Paper elevation={0} style={{ padding: 32, borderRadius: 0 }}>
           <CoinInfo currencyData={currencyData} {...coin} />
           <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
             <Tabs tabs={tabs} />

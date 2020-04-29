@@ -5,7 +5,6 @@ export default makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
-      minWidth: 800,
     },
     bar: {
       backgroundColor: theme.palette.primary.contrastText,

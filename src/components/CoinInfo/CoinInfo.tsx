@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Props } from './CoinInfo.interface';
 import useStyles from './CoinInfo.styles';
-import { Box, CardMedia, Typography } from '@material-ui/core';
+import { Box, CardMedia, Typography, Paper } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
@@ -27,14 +27,18 @@ const CoinInfo: FC<Props> = (props) => {
     twitterUrl,
     exp,
     id,
-    currencyData
+    currencyData,
   } = props;
   const classes = useStyles();
 
   const { favourite, onFavourite } = useFavourites(id);
 
   return (
-    <Box style={{ justifyContent: 'space-between', padding: 16, flexWrap: 'wrap' }} className={classes.flex}>
+    <Paper
+      elevation={0}
+      style={{ justifyContent: 'space-between', padding: 16, flexWrap: 'wrap',  borderRadius: 0 }}
+      className={classes.flex}
+    >
       <Box>
         <div className={[classes.flex, classes.label].join(' ')}>
           <CardMedia style={{ height: 32, width: 32, marginRight: 8 }} image={icon} />
@@ -67,11 +71,15 @@ const CoinInfo: FC<Props> = (props) => {
       <Box>
         <div style={{ height: 48 }}>
           <div className={classes.title}>MARKET CAP</div>
-          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(marketCap)}`}</Typography>
+          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(
+            marketCap,
+          )}`}</Typography>
         </div>
         <div style={{ height: 48 }}>
           <div className={classes.title}>VOLUME 24H</div>
-          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(volume)}`}</Typography>
+          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(
+            volume,
+          )}`}</Typography>
         </div>
       </Box>
       <Box>
@@ -120,7 +128,7 @@ const CoinInfo: FC<Props> = (props) => {
           </Tooltip>
         ))}
       </Box>
-    </Box>
+    </Paper>
   );
 };
 
