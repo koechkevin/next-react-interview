@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Exchanges } from '../src/components';
 import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
-import { Paper } from '@material-ui/core';
+import { debounce, Paper } from '@material-ui/core';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { HomeProps } from '../src/page.interfaces';
@@ -13,13 +13,35 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import _ from 'lodash.throttle';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { FAVOURITES } from '../src/useFavourites';
+import { Fiat, HeaderValues } from '../src/components/Header/Header.interface';
+import { useRouter } from 'next/router';
+import { baseUrl } from '../src/apiConfig';
 
 const Home: FC<HomeProps> = (props) => {
   const classes = usePageStyles();
-  const list = props.coinsWithGlobalAverage || [];
+  const [list, setList] = useState<Coin[]>(() => props.coinsWithGlobalAverage || []);
+  const [headerValues, setHeaderValues] = useState<HeaderValues>(() => ({ ...props.initialValue }));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios.get(`${baseUrl}/coins`, {params: {...headerValues}}).then((res) => {
+        setList(res.data.coins);
+      });
+    }, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [headerValues, props.coinsWithGlobalAverage]);
+
+  useEffect(() => {
+    if (props.coinsWithGlobalAverage) {
+      setList(props.coinsWithGlobalAverage);
+    }
+  }, [props.coinsWithGlobalAverage]);
 
   const [listToDisplay, setListToDisplay] = useState<Coin[]>(() => list.slice(0, 10));
   const [timeout, setTime] = useState<any>();
+  const router = useRouter();
+
+  const [currencyData, setCurrencyData] = useState<Fiat>();
 
   const [activeTab, setActiveTab] = useState(0);
   const next = () => {
@@ -35,7 +57,22 @@ const Home: FC<HomeProps> = (props) => {
     };
   });
 
-  const { theme, switchTheme, isDark } = useLocalTheme();
+  useEffect(() => {
+    setListToDisplay((val: Coin[]) => list.slice(0, val.length));
+  }, [list]);
+
+  const push = useCallback(debounce(router.push, 2000), [router]);
+
+  const onChange = (val: HeaderValues) => {
+    setHeaderValues(headerValues);
+    const query = val.search ?  { ...val} : { currency: val.currency};
+    push({
+      pathname: `/`,
+      query: { ...query },
+    });
+  };
+
+  const { theme, isDark, switchTheme } = useLocalTheme();
   const [favourites, setFavourites] = useState<Coin[]>(() => []);
 
   useEffect(() => {
@@ -63,7 +100,7 @@ const Home: FC<HomeProps> = (props) => {
   const tabConfig: Item[] = [
     {
       label: 'CRYPTOCURRENCIES',
-      component: <CoinsList list={listToDisplay} />,
+      component: <CoinsList currentCurrency={currencyData} list={listToDisplay} />,
     },
     {
       label: 'EXCHANGES',
@@ -71,7 +108,7 @@ const Home: FC<HomeProps> = (props) => {
     },
     {
       label: 'FAVOURITES',
-      component: <CoinsList list={favourites} />,
+      component: <CoinsList currentCurrency={currencyData} list={favourites} />,
     },
   ];
 
@@ -108,9 +145,14 @@ const Home: FC<HomeProps> = (props) => {
             </Paper>
           }
         >
-          <Header isDark={isDark} onChangeTheme={switchTheme} />
+          <Header
+            onCurrencyChange={setCurrencyData}
+            onChange={onChange}
+            onChangeTheme={switchTheme}
+            initialValue={headerValues}
+          />
           <Paper elevation={0} className={classes.body}>
-            {list.length && <CryptoPricesAndPortfolio {...list[0]} />}
+            {list.length && <CryptoPricesAndPortfolio currencyData={currencyData} {...list[0]} />}
             <div>
               <Tabs
                 onTabChange={(idx: number) => {
@@ -127,13 +169,22 @@ const Home: FC<HomeProps> = (props) => {
   );
 };
 
-export const getServerSideProps: GetStaticProps = async ({ params }) => {
-  const response = await axios.get('https://api.coinstats.app/public/v1/coins', { params });
-  return {
-    props: {
-      coinsWithGlobalAverage: response.data.coins,
-    },
-  };
+export const getServerSideProps: GetStaticProps = async ({ query }: any) => {
+  try {
+    const response = await axios.get(`${baseUrl}/coins`, { params: query });
+    return {
+      props: {
+        coinsWithGlobalAverage: response?.data?.coins || [],
+        urlParams: query,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        coinsWithGlobalAverage: [],
+      },
+    };
+  }
 };
 
 export default Home;

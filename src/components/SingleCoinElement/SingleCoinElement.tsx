@@ -8,10 +8,13 @@ import { ActiveLink } from '../ActiveLink';
 import { CoinChart } from '../CoinChart';
 import StarIcon from '@material-ui/icons/Star';
 import {useFavourites} from "../../useFavourites";
+import {useRouter} from "next/router";
 
 const SingleCoinElement: FC<Props> = (props) => {
-  const { rank, name, priceChange1d, price, priceBtc, marketCap, volume, icon, id } = props;
+  const { rank, name, priceChange1d, price, priceBtc, marketCap, volume, icon, id, currentCurrency } = props;
   const classes = useStyles();
+
+  const router = useRouter();
 
   const { favourite, onFavourite } = useFavourites(id);
 
@@ -24,7 +27,7 @@ const SingleCoinElement: FC<Props> = (props) => {
           style={{ cursor: 'pointer',color: !favourite ? 'lightgray' : '' }}
         />
       </div>
-      <ActiveLink href="/[coin]" as={`/${id}`}>
+      <ActiveLink href={{pathname:"/[coin]", query:  router.query  }} as={`/${id}`}>
         <div className={classes.row}>
           <div style={{ width: 32 }} className={classes.td}>
             <Typography>{rank}</Typography>
@@ -44,16 +47,16 @@ const SingleCoinElement: FC<Props> = (props) => {
             )}%`}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
-            <Typography>{`$${price.toFixed(2)}`}</Typography>
+            <Typography>{`${currentCurrency?.symbol}${price.toFixed(2)}`}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
             <Typography>{priceBtc.toFixed(8)}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
-            <Typography>{`$${marketCap.toFixed(1)}`}</Typography>
+            <Typography>{`${currentCurrency?.symbol}${marketCap.toFixed(1)}`}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
-            <Typography>{`$${volume.toFixed(1)}`}</Typography>
+            <Typography>{`${currentCurrency?.symbol}${volume.toFixed(1)}`}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
             <CoinChart data={[]} />

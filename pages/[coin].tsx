@@ -1,17 +1,18 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { CoinProps } from '../src/page.interfaces';
 import { CoinChart, CoinInfo, Header, Tabs } from '../src/components';
-import { Button, Paper, ThemeProvider } from '@material-ui/core';
+import { Button, debounce, Paper, ThemeProvider } from '@material-ui/core';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
 import { baseUrl } from '../src/apiConfig';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import Head from 'next/head';
+import {Fiat, HeaderValues} from '../src/components/Header/Header.interface';
 
 const Coin: FC<CoinProps> = (props) => {
-  const { coin } = props;
+  const { coin, urlParams } = props;
   const [params, setParams] = useState({
     coinId: coin?.id,
     period: '24h',
@@ -47,7 +48,23 @@ const Coin: FC<CoinProps> = (props) => {
       component: <span />,
     },
   ];
-  const { theme, switchTheme, isDark } = useLocalTheme();
+  const { theme, switchTheme } = useLocalTheme();
+
+  const router = useRouter();
+
+  const push = useCallback(debounce(router.push, 2000), [router]);
+
+  const [currencyData, setCurrencyData] = useState<Fiat>();
+
+  const [headerValues, setHeaderValues] = useState<HeaderValues>(() => ({ currency: 'USD', search: '', ...urlParams }));
+
+  const onChange = (val: HeaderValues) => {
+    setHeaderValues(headerValues);
+    push({
+      pathname: `/${coin?.id}`,
+      query: { ...val },
+    });
+  };
 
   useEffect(() => {
     if (!coin) {
@@ -58,6 +75,7 @@ const Coin: FC<CoinProps> = (props) => {
   if (!coin) {
     return <div />;
   }
+
   return (
     <ThemeProvider theme={theme || light}>
       <Head>
@@ -65,9 +83,9 @@ const Coin: FC<CoinProps> = (props) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Paper style={{ borderRadius: 0, minHeight: '100vh' }} elevation={0}>
-        <Header isDark={isDark} onChangeTheme={switchTheme} />
+        <Header onCurrencyChange={setCurrencyData} onChange={onChange} onChangeTheme={switchTheme} initialValue={headerValues} />
         <Paper elevation={0} style={{ padding: 32 }}>
-          <CoinInfo {...coin} />
+          <CoinInfo currencyData={currencyData} {...coin} />
           <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
             <Tabs tabs={tabs} />
             <Paper elevation={0} style={{ display: 'flex' }}>
@@ -121,16 +139,17 @@ const Coin: FC<CoinProps> = (props) => {
   );
 };
 
-export const getServerSideProps: GetStaticProps = async ({ params }: any) => {
-  const { coin: queryCoin, ...restProps } = params;
+export const getServerSideProps: GetStaticProps = async ({ query }: any) => {
+  const { coin, ...restQuery } = query;
   try {
-    const res = await axios.get(`${baseUrl}/coins/${queryCoin}`, {
-      params: { ...restProps },
+    const res = await axios.get(`${baseUrl}/coins/${query.coin}`, {
+      params: { ...query },
     });
     if (res.data.coin) {
       return {
         props: {
           coin: res.data.coin,
+          urlParams: restQuery,
         },
       };
     }

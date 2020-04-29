@@ -44,5 +44,23 @@ export default makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
       border: `1px solid ${theme.palette.grey['300']}`,
     },
+    select: {
+      border: `1px solid ${theme.palette.grey['300']}`,
+      borderRadius: 15,
+      '& .MuiSelect-root': {
+        padding: '8px 16px',
+        display: 'flex',
+      }
+    },
+    item: {
+      height: 28,
+      padding: '0 8px',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'nowrap'
+    },
+    selectList: {
+      border: `1px solid ${theme.palette.grey['300']}`,
+    }
   }),
 );

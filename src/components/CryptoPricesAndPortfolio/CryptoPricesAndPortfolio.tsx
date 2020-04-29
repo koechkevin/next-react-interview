@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { Props } from './CryptoPricesAndPortfolio.interface';
 import useStyles from './CryptoPricesAndPortfolio.styles';
-import {Box, Paper, Typography} from '@material-ui/core';
+import { Paper, Typography} from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 const CryptoPricesAndPortfolio: FC<Props> = (props) => {
   const classes = useStyles();
-  const { marketCap, volume, priceChange1d } = props;
+  const { marketCap, volume, priceChange1d, currencyData } = props;
   return (
     <Paper elevation={0} className={classes.parent} style={{ marginTop: 16 }}>
       <div style={{ textAlign: 'center' }}>
@@ -19,7 +19,7 @@ const CryptoPricesAndPortfolio: FC<Props> = (props) => {
         <div>
           <div className={classes.label}>MARKET CAP</div>
           <div style={{ display: 'flex' }}>
-            <Typography style={{ fontSize: 16 }}>{`$${new Intl.NumberFormat().format(marketCap)}`}</Typography>
+            <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(marketCap)}`}</Typography>
             <div
               className={[priceChange1d > 0 ? classes.positive : classes.negative].join(' ')}
               style={{ marginLeft: 8, display: 'flex', alignItems: 'center' }}
@@ -36,7 +36,7 @@ const CryptoPricesAndPortfolio: FC<Props> = (props) => {
         <div>
           <div className={classes.label}>VOLUME 24H</div>
           <div style={{ display: 'flex' }}>
-            <Typography style={{ fontSize: 16 }}>{`$${new Intl.NumberFormat().format(volume)}`}</Typography>
+            <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(volume)}`}</Typography>
             <div
               className={[priceChange1d > 0 ? classes.positive : classes.negative].join(' ')}
               style={{ marginLeft: 8, display: 'flex', alignItems: 'center' }}

@@ -1,3 +1,5 @@
+import {Fiat} from "../Header/Header.interface";
+
 export interface Coin {
   id: string;
   icon: string;
@@ -17,4 +19,5 @@ export interface Coin {
 }
 export interface Props {
   list: Coin[];
+  currentCurrency?: Fiat;
 }

@@ -5,7 +5,7 @@ import { SingleCoinElement } from '../SingleCoinElement';
 import CoinsListHeader from './CoinsListHead';
 
 const CoinsList: FC<Props> = (props) => {
-  const { list } = props;
+  const { list, currentCurrency } = props;
   const classes = useStyles();
 
   return (
@@ -13,7 +13,7 @@ const CoinsList: FC<Props> = (props) => {
       <div className={classes.table}>
         <CoinsListHeader />
         {list.map((coin: Coin, index: number) => (
-          <SingleCoinElement key={coin.id} {...coin} />
+          <SingleCoinElement currentCurrency={currentCurrency} key={coin.id} {...coin} />
         ))}
       </div>
     </div>

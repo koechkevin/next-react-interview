@@ -14,6 +14,7 @@ export default makeStyles((theme: Theme) => createStyles({
     display: 'flex',
     height: 32,
   },
+
   cell: {
     flex: 1,
     paddingLeft: 8,

@@ -27,6 +27,7 @@ const CoinInfo: FC<Props> = (props) => {
     twitterUrl,
     exp,
     id,
+    currencyData
   } = props;
   const classes = useStyles();
 
@@ -49,7 +50,7 @@ const CoinInfo: FC<Props> = (props) => {
           >
             <StarIcon className={classes.icon} style={{ color: !favourite ? 'lightgray' : '' }} />
           </div>
-          <div className={classes.price}>{`$${price.toFixed(2)}`}</div>
+          <div className={classes.price}>{`${currencyData?.symbol}${price.toFixed(2)}`}</div>
           <div
             className={[classes.flex, priceChange1d > 0 ? classes.positive : classes.negative].join(' ')}
             style={{ marginLeft: 8, fontSize: 16 }}
@@ -66,11 +67,11 @@ const CoinInfo: FC<Props> = (props) => {
       <Box>
         <div style={{ height: 48 }}>
           <div className={classes.title}>MARKET CAP</div>
-          <Typography style={{ fontSize: 16 }}>{`$${new Intl.NumberFormat().format(marketCap)}`}</Typography>
+          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(marketCap)}`}</Typography>
         </div>
         <div style={{ height: 48 }}>
           <div className={classes.title}>VOLUME 24H</div>
-          <Typography style={{ fontSize: 16 }}>{`$${new Intl.NumberFormat().format(volume)}`}</Typography>
+          <Typography style={{ fontSize: 16 }}>{`${currencyData?.symbol}${new Intl.NumberFormat().format(volume)}`}</Typography>
         </div>
       </Box>
       <Box>

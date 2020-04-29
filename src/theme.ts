@@ -1,5 +1,5 @@
-import {createMuiTheme, Theme} from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { createMuiTheme, Theme } from '@material-ui/core';
+import {useCallback, useEffect, useState} from 'react';
 
 export const MODE = 'THEME_MODE';
 export const colorScheme = {
@@ -28,12 +28,12 @@ const dark = createMuiTheme({
     },
     primary: {
       ...colorScheme.palette.primary,
-      contrastText: '#000'
+      contrastText: '#000',
     },
     background: {
       paper: '#000',
     },
-  }
+  },
 });
 
 export const light = createMuiTheme({
@@ -43,10 +43,10 @@ export const light = createMuiTheme({
 export const useLocalTheme = (): LocalTheme => {
   const [isDark, setIsDark] = useState<boolean>(false);
 
-  const switchTheme = () => {
+  const switchTheme = useCallback(() => {
     localStorage.setItem(MODE, isDark ? 'light' : 'dark');
     setIsDark((val) => !val);
-  };
+  }, [isDark]);
 
   useEffect(() => {
     const mode: string = localStorage.getItem(MODE) || 'light';
