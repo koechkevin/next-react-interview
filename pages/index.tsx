@@ -129,7 +129,7 @@ const Home: FC<HomeProps> = (props) => {
             Array(9)
               .fill('')
               .map((e, i) => (
-                <Paper className={classes.skeleton} style={{ padding: '0 32px', borderRadius: 0 }} key={i}>
+                <Paper className={classes.skeleton} style={{ padding: '0 32px', borderRadius: 0, minWidth: 800 }} key={i}>
                   <Skeleton
                     style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
                     animation="wave"
@@ -140,7 +140,7 @@ const Home: FC<HomeProps> = (props) => {
           }
           onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
           endMessage={
-            <Paper style={{ borderRadius: 0, textAlign: 'center' }} elevation={0}>
+            <Paper style={{ borderRadius: 0, textAlign: 'center', minWidth: 800 }} elevation={0}>
               <b>All Done</b>
             </Paper>
           }
