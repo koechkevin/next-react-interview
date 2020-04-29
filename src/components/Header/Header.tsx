@@ -55,7 +55,7 @@ const Header: FC<Props> = (props) => {
   }, [state.currency, data]);
 
   return (
-    <AppBar elevation={0} position="sticky">
+    <AppBar style={{ flex: 1 }} elevation={0} position="sticky">
       <Toolbar className={classes.root}>
         <ActiveLink activeClassName={classes.active} href="/">
           <IconButton className={classes.logo} edge="start" color="inherit">

@@ -112,7 +112,7 @@ const Home: FC<HomeProps> = (props) => {
   ];
 
   return (
-    <>
+    <div style={{ minWidth: 800 }}>
     <ThemeProvider theme={theme || light}>
       <Head>
         <title>Crypto Stats</title>
@@ -166,7 +166,7 @@ const Home: FC<HomeProps> = (props) => {
         </InfiniteScroll>
       </Paper>
     </ThemeProvider>
-    </>
+    </div>
   );
 };
 
