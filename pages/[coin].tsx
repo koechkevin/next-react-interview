@@ -3,8 +3,8 @@ import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { CoinProps } from '../src/page.interfaces';
 import { CoinChart, CoinInfo, Header, Tabs } from '../src/components';
-import { Button, debounce, Paper, ThemeProvider } from '@material-ui/core';
-import { light, useLocalTheme } from '../src/theme';
+import {Button, debounce, Paper, ThemeProvider} from '@material-ui/core';
+import {light, useLocalTheme} from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
 import { baseUrl } from '../src/apiConfig';
 import Router, { useRouter } from 'next/router';
@@ -48,7 +48,7 @@ const Coin: FC<CoinProps> = (props) => {
       component: <span />,
     },
   ];
-  const { theme, switchTheme } = useLocalTheme();
+  const { switchTheme, theme } = useLocalTheme();
 
   const router = useRouter();
 

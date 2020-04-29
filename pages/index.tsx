@@ -1,10 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Exchanges } from '../src/components';
 import Head from 'next/head';
-import { ThemeProvider } from '@material-ui/styles';
-import { light, useLocalTheme } from '../src/theme';
+import {light, useLocalTheme} from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
-import { debounce, Paper } from '@material-ui/core';
+import {debounce, Paper, ThemeProvider} from '@material-ui/core';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { HomeProps } from '../src/page.interfaces';
@@ -113,6 +112,7 @@ const Home: FC<HomeProps> = (props) => {
   ];
 
   return (
+    <>
     <ThemeProvider theme={theme || light}>
       <Head>
         <title>Crypto Stats</title>
@@ -166,6 +166,7 @@ const Home: FC<HomeProps> = (props) => {
         </InfiniteScroll>
       </Paper>
     </ThemeProvider>
+    </>
   );
 };
 

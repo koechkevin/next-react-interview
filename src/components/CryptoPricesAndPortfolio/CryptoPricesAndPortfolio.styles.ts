@@ -21,6 +21,7 @@ export default makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       marginBottom: 16,
+      minWidth: 800,
       flexDirection: 'column'
     },
     label: {
