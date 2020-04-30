@@ -37,7 +37,7 @@ const Header: FC<Props> = (props) => {
 
   useEffect(() => {
     axios.get(`${baseUrl}/fiats`).then((res: any) => {
-      setData(res.data);
+      data && setData(res.data);
     });
   }, []);
 
@@ -70,7 +70,7 @@ const Header: FC<Props> = (props) => {
           <ActiveLink activeClassName={classes.active} href="/">
             <Typography className={classes.text}>Live Prices</Typography>
           </ActiveLink>
-          <ActiveLink href="">
+          <ActiveLink activeClassName={classes.active} href="/news">
             <Typography className={classes.text}>News</Typography>
           </ActiveLink>
           <ActiveLink href="">

@@ -6,6 +6,7 @@ export default makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.contrastText,
       minWidth: 800,
       overflowX: 'hidden',
+      padding: '0, 16px',
     },
     divider: {
       height: 20,
