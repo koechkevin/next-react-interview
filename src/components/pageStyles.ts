@@ -14,5 +14,11 @@ export default makeStyles((theme: Theme) =>
     },
     skeleton: {
     },
+    loadMore: {
+      marginTop: 8,
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%'
+    }
   }),
 );

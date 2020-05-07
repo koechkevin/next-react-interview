@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Exchanges } from '../src/components';
 import Head from 'next/head';
-import {light, useLocalTheme} from '../src/theme';
+import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
-import {debounce, Paper, ThemeProvider} from '@material-ui/core';
+import { Button, debounce, Paper, ThemeProvider, CircularProgress } from '@material-ui/core';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { HomeProps } from '../src/page.interfaces';
@@ -20,10 +20,11 @@ const Home: FC<HomeProps> = (props) => {
   const classes = usePageStyles();
   const [list, setList] = useState<Coin[]>(() => props.coinsWithGlobalAverage || []);
   const [headerValues, setHeaderValues] = useState<HeaderValues>(() => ({ ...props.initialValue }));
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get(`${baseUrl}/coins`, {params: {...headerValues}}).then((res) => {
+      axios.get(`${baseUrl}/coins`, { params: { ...headerValues } }).then((res) => {
         setList(res.data.coins);
       });
     }, 60 * 1000);
@@ -46,6 +47,7 @@ const Home: FC<HomeProps> = (props) => {
   const next = () => {
     const time = setTimeout(() => {
       setListToDisplay((lst: Coin[]) => [...lst, ...list.slice(lst.length, lst.length + 10)]);
+      setLoading(false);
     }, 1000);
     setTime(time);
   };
@@ -64,7 +66,7 @@ const Home: FC<HomeProps> = (props) => {
 
   const onChange = (val: HeaderValues) => {
     setHeaderValues(headerValues);
-    const query = val.search ?  { ...val} : { currency: val.currency};
+    const query = val.search ? { ...val } : { currency: val.currency };
     push({
       pathname: `/`,
       query: { ...query },
@@ -99,7 +101,25 @@ const Home: FC<HomeProps> = (props) => {
   const tabConfig: Item[] = [
     {
       label: 'CRYPTOCURRENCIES',
-      component: <CoinsList currentCurrency={currencyData} list={listToDisplay} />,
+      component: (
+        <>
+          <CoinsList currentCurrency={currencyData} list={listToDisplay} />
+          {listToDisplay.length <= 10 &&
+            listToDisplay.length < list.length &&
+            (loading ? (
+              <Paper className={classes.loadMore} elevation={0}>
+                <CircularProgress size={20} thickness={2} />
+              </Paper>
+            ) : (
+              <Button onClick={() => {
+                setLoading(true);
+                next();
+              }} color="primary" className={classes.loadMore}>
+                Load More
+              </Button>
+            ))}
+        </>
+      ),
     },
     {
       label: 'EXCHANGES',
@@ -113,59 +133,63 @@ const Home: FC<HomeProps> = (props) => {
 
   return (
     <div style={{ minWidth: 800 }}>
-    <ThemeProvider theme={theme || light}>
-      <Head>
-        <title>Crypto Stats</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
-        <InfiniteScroll
-          dataLength={list.length}
-          next={() => {}}
-          hasMore={listToDisplay < list}
-          height="100vh"
-          loader={
-            activeTab === 0 &&
-            Array(9)
-              .fill('')
-              .map((e, i) => (
-                <Paper className={classes.skeleton} style={{ padding: '0 32px', borderRadius: 0, minWidth: 800 }} key={i}>
-                  <Skeleton
-                    style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
-                    animation="wave"
-                    height={51}
-                  />
-                </Paper>
-              ))
-          }
-          onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
-          endMessage={
-            <Paper style={{ borderRadius: 0, textAlign: 'center', minWidth: 800 }} elevation={0}>
-              <b>All Done</b>
+      <ThemeProvider theme={theme || light}>
+        <Head>
+          <title>Crypto Stats</title>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        </Head>
+        <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
+          <InfiniteScroll
+            dataLength={list.length}
+            next={() => {}}
+            hasMore={listToDisplay < list}
+            height="100vh"
+            loader={
+              activeTab === 0 &&
+              Array(9)
+                .fill('')
+                .map((e, i) => (
+                  <Paper
+                    className={classes.skeleton}
+                    style={{ padding: '0 32px', borderRadius: 0, minWidth: 800 }}
+                    key={i}
+                  >
+                    <Skeleton
+                      style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
+                      animation="wave"
+                      height={51}
+                    />
+                  </Paper>
+                ))
+            }
+            onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
+            endMessage={
+              <Paper style={{ borderRadius: 0, textAlign: 'center', minWidth: 800 }} elevation={0}>
+                <b>All Done</b>
+              </Paper>
+            }
+          >
+            <Header
+              onCurrencyChange={setCurrencyData}
+              onChange={onChange}
+              onChangeTheme={switchTheme}
+              initialValue={headerValues}
+            />
+            <Paper elevation={0} className={classes.body}>
+              {list.length && <CryptoPricesAndPortfolio currencyData={currencyData} {...list[0]} />}
+              <div>
+                <Tabs
+                  onTabChange={(idx: number) => {
+                    setActiveTab(idx);
+                    setListToDisplay(() => list.slice(0, 10));
+                  }}
+                  tabs={tabConfig}
+                />
+              </div>
             </Paper>
-          }
-        >
-          <Header
-            onCurrencyChange={setCurrencyData}
-            onChange={onChange}
-            onChangeTheme={switchTheme}
-            initialValue={headerValues}
-          />
-          <Paper elevation={0} className={classes.body}>
-            {list.length && <CryptoPricesAndPortfolio currencyData={currencyData} {...list[0]} />}
-            <div>
-              <Tabs
-                onTabChange={(idx: number) => {
-                  setActiveTab(idx);
-                  setListToDisplay(() => list.slice(0, 10));
-                }}
-                tabs={tabConfig}
-              />
-            </div>
-          </Paper>
-        </InfiniteScroll>
-      </Paper>
-    </ThemeProvider>
+          </InfiniteScroll>
+        </Paper>
+      </ThemeProvider>
     </div>
   );
 };
