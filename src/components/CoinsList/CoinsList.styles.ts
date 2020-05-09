@@ -5,6 +5,7 @@ export default makeStyles((theme: Theme) => createStyles({
     width: '100%',
     borderCollapse: 'collapse',
     marginTop: 8,
+    height: 'calc(100vh - 272px)',
     minWidth: 800,
   },
   head: {

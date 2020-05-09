@@ -7,6 +7,7 @@ export default makeStyles((theme: Theme) =>
       flexDirection: 'column',
       padding: '16px 32px',
       borderRadius: 0,
+      height: `calc(100vh - 64px)`
     },
     sticky: {
       position: 'sticky',

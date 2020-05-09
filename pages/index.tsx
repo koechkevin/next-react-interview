@@ -3,14 +3,11 @@ import { CryptoPricesAndPortfolio, Header, Tabs, usePageStyles, CoinsList, Excha
 import Head from 'next/head';
 import { light, useLocalTheme } from '../src/theme';
 import { Item } from '../src/components/Tabs/Tabs.interface';
-import { Button, debounce, Paper, ThemeProvider, CircularProgress } from '@material-ui/core';
+import { debounce, Paper, ThemeProvider } from '@material-ui/core';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 import { HomeProps } from '../src/page.interfaces';
 import { Coin } from '../src/components/CoinsList/CoinsList.interface';
-import Skeleton from '@material-ui/lab/Skeleton';
-import _ from 'lodash.throttle';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { FAVOURITES } from '../src/useFavourites';
 import { Fiat, HeaderValues } from '../src/components/Header/Header.interface';
 import { useRouter } from 'next/router';
@@ -22,47 +19,22 @@ const Home: FC<HomeProps> = (props) => {
   const [headerValues, setHeaderValues] = useState<HeaderValues>(() => ({ ...props.initialValue }));
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios.get(`${baseUrl}/coins`, { params: { ...headerValues } }).then((res) => {
-        setList(res.data.coins);
-      });
-    }, 60 * 1000);
-    return () => clearInterval(interval);
-  }, [headerValues, props.coinsWithGlobalAverage]);
-
-  useEffect(() => {
-    if (props.coinsWithGlobalAverage) {
-      setList(props.coinsWithGlobalAverage);
-    }
-  }, [props.coinsWithGlobalAverage]);
-
-  const [listToDisplay, setListToDisplay] = useState<Coin[]>(() => list.slice(0, 10));
-  const [timeout, setTime] = useState<any>();
   const router = useRouter();
 
   const [currencyData, setCurrencyData] = useState<Fiat>();
 
   const [activeTab, setActiveTab] = useState(0);
-  const next = () => {
-    const time = setTimeout(() => {
-      setListToDisplay((lst: Coin[]) => [...lst, ...list.slice(lst.length, lst.length + 10)]);
-      setLoading(false);
-    }, 1000);
-    setTime(time);
-  };
-
-  useEffect(() => {
-    return () => {
-      clearTimeout(timeout);
-    };
-  });
-
-  useEffect(() => {
-    setListToDisplay((val: Coin[]) => list.slice(0, val.length));
-  }, [list]);
 
   const push = useCallback(debounce(router.push, 2000), [router]);
+
+  const fetchNext = async (limit: number) => {
+    setLoading(true);
+    const response = await axios.get(`${baseUrl}/coins`, { params: { currency: currencyData?.symbol, limit } });
+    if (response.data.coins) {
+      setList(response.data.coins);
+    }
+    setLoading(false);
+  };
 
   const onChange = (val: HeaderValues) => {
     setHeaderValues(headerValues);
@@ -101,25 +73,7 @@ const Home: FC<HomeProps> = (props) => {
   const tabConfig: Item[] = [
     {
       label: 'CRYPTOCURRENCIES',
-      component: (
-        <>
-          <CoinsList currentCurrency={currencyData} list={listToDisplay} />
-          {listToDisplay.length <= 10 &&
-            listToDisplay.length < list.length &&
-            (loading ? (
-              <Paper className={classes.loadMore} elevation={0}>
-                <CircularProgress size={20} thickness={2} />
-              </Paper>
-            ) : (
-              <Button onClick={() => {
-                setLoading(true);
-                next();
-              }} color="primary" className={classes.loadMore}>
-                Load More
-              </Button>
-            ))}
-        </>
-      ),
+      component: <CoinsList loading={loading} fetchNext={fetchNext} currentCurrency={currencyData} list={list} />
     },
     {
       label: 'EXCHANGES',
@@ -138,56 +92,24 @@ const Home: FC<HomeProps> = (props) => {
           <title>Crypto Stats</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         </Head>
-        <Paper elevation={0} style={{ padding: 0, borderRadius: 0 }}>
-          <InfiniteScroll
-            dataLength={list.length}
-            next={() => {}}
-            hasMore={listToDisplay < list}
-            height="100vh"
-            loader={
-              activeTab === 0 &&
-              Array(9)
-                .fill('')
-                .map((e, i) => (
-                  <Paper
-                    className={classes.skeleton}
-                    style={{ padding: '0 32px', borderRadius: 0, minWidth: 800 }}
-                    key={i}
-                  >
-                    <Skeleton
-                      style={{ backgroundColor: isDark ? 'rgb(32,32,32)' : '#fff' }}
-                      animation="wave"
-                      height={51}
-                    />
-                  </Paper>
-                ))
-            }
-            onScroll={activeTab === 0 ? _(next, 1000) : () => {}}
-            endMessage={
-              <Paper style={{ borderRadius: 0, textAlign: 'center', minWidth: 800 }} elevation={0}>
-                <b>All Done</b>
-              </Paper>
-            }
-          >
-            <Header
-              onCurrencyChange={setCurrencyData}
-              onChange={onChange}
-              onChangeTheme={switchTheme}
-              initialValue={headerValues}
-            />
-            <Paper elevation={0} className={classes.body}>
-              {list.length && <CryptoPricesAndPortfolio currencyData={currencyData} {...list[0]} />}
-              <div>
-                <Tabs
-                  onTabChange={(idx: number) => {
-                    setActiveTab(idx);
-                    setListToDisplay(() => list.slice(0, 10));
-                  }}
-                  tabs={tabConfig}
-                />
-              </div>
-            </Paper>
-          </InfiniteScroll>
+        <Paper elevation={0} style={{ padding: 0, borderRadius: 0, height: '100vh' }}>
+          <Header
+            onCurrencyChange={setCurrencyData}
+            onChange={onChange}
+            onChangeTheme={switchTheme}
+            initialValue={headerValues}
+          />
+          <Paper elevation={0} className={classes.body}>
+            {list.length && <CryptoPricesAndPortfolio currencyData={currencyData} {...list[0]} />}
+            <div>
+              <Tabs
+                onTabChange={(idx: number) => {
+                  setActiveTab(idx);
+                }}
+                tabs={tabConfig}
+              />
+            </div>
+          </Paper>
         </Paper>
       </ThemeProvider>
     </div>
@@ -196,7 +118,7 @@ const Home: FC<HomeProps> = (props) => {
 
 export const getServerSideProps: GetStaticProps = async ({ query }: any) => {
   try {
-    const response = await axios.get(`${baseUrl}/coins`, { params: query });
+    const response = await axios.get(`${baseUrl}/coins`, { params: {limit: 10, ...query} });
     return {
       props: {
         coinsWithGlobalAverage: response?.data?.coins || [],

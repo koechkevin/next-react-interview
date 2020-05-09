@@ -19,7 +19,7 @@ const SingleCoinElement: FC<Props> = (props) => {
   const { favourite, onFavourite } = useFavourites(id);
 
   return (
-    <Box style={{ display: 'flex' }}>
+    <Box style={{ display: 'flex', height: 52 }}>
       <div style={{ width: 32, alignItems: 'center' }} className={classes.td}>
         <StarIcon
           onClick={onFavourite}
@@ -32,9 +32,11 @@ const SingleCoinElement: FC<Props> = (props) => {
           <div style={{ width: 32 }} className={classes.td}>
             <Typography>{rank}</Typography>
           </div>
-          <div style={{ flex: 1 }} className={classes.td}>
+          <div style={{ overflow: 'hidden',flex: 1, textOverflow: 'ellipsis', }} className={classes.td}>
             <CardMedia style={{ height: 16, width: 16, marginRight: 8 }} image={icon} />
-            <Typography>{name}</Typography>
+            <Typography style={{
+               textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+            }}>{name}</Typography>
           </div>
           <div style={{ flex: 1 }} className={classes.td}>
             {priceChange1d > 0 ? (

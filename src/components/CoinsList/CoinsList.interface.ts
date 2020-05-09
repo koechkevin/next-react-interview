@@ -1,4 +1,5 @@
 import {Fiat} from "../Header/Header.interface";
+import {CSSProperties} from "react";
 
 export interface Coin {
   id: string;
@@ -20,4 +21,11 @@ export interface Coin {
 export interface Props {
   list: Coin[];
   currentCurrency?: Fiat;
+  fetchNext?: (limit: number) => void;
+  loading?: boolean;
+}
+
+export interface RowInterface {
+  index: number;
+  style: CSSProperties;
 }
