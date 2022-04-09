@@ -15,7 +15,7 @@
     "axios": "^0.21.1",
     "lodash": "^4.17.19",
     "lodash.throttle": "^4.1.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "next": "latest",
     "react": "^16.7.0",
     "react-charts": "^2.0.0-beta.6",
